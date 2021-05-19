@@ -1,0 +1,70 @@
+"""
+from sage.manifolds.differentiable.diff_form_module import DiffFormParal
+
+k=var('k')
+a=function('a')
+
+def MakeFunction(tt):
+    return tt.expr()
+
+def MakeC(tt):
+    global M,XX
+    M=Manifold(len(tt),'M',start_index=1)
+    XX=M.chart(names=tt)
+    for n in range(M._dim):
+        globals()[tt[n]]=XX[n+1]
+        globals()['d'+tt[n]]=XX.coframe()[n+1]
+    return XX
+
+def Makeg(ss,tt):
+    global g,MakeO,sig
+    g=M.metric('g',M._dim-2*ss)
+    def sig(uu):
+        return (1 if uu>=ss else -1)
+    MakeO=M.automorphism_field()
+    for m in range(M._dim):
+        for n in range(M._dim): 
+            g[m+1,n+1]=0
+            g[m+1,m+1]=sig(m)*tt[m]**2
+            MakeO[m+1,m+1]=1/tt[m]
+    e=XX.frame().new_frame(MakeO,'e')
+    M.set_default_frame(e)
+    return g.display(XX.frame())
+
+def MakeGam():
+    global nab,gam,om
+    nab=g.connection()
+    gam=nab.coef()
+    def om(mm,nn):
+        return nab.connection_form(mm,nn)
+    return table([[om(i+1,j+1).display(XX.frame())
+        for j in range(M._dim)] for i in range(M._dim)])
+
+def MakeOm():
+    global Om,riem
+    def Om(mm,nn):
+        return nab.curvature_form(mm,nn)
+    riem=g.riemann()
+    return table([[Om(i+1,j+1).display(XX.frame())
+        for j in range(M._dim)] for i in range(M._dim)])
+
+def MakeRic():
+    global ric
+    ric=g.ricci()
+    return ric[:]
+def MakeRscl():
+    global ric,rscl
+    ric=g.ricci()
+    rscl=g.ricci_scalar()
+    return MakeFunction(rscl)
+def MakeEin():
+    global ric,rscl,ein
+    ric=g.ricci()
+    rscl=g.ricci_scalar()
+    ein=ric-rscl*g/2
+    return ein[:]
+
+pretty_print_default(True)
+
+print("Initialization loaded")
+"""
