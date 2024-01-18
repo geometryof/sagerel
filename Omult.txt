@@ -1,7 +1,7 @@
 """
 def _repr_termTD(self, m):
         r
-        data = ['1', 'i', 'j', 'k', 'l', 'il', 'jl', 'kl']
+        data = ['1', 'I', 'J', 'K', 'L', 'IL', 'JL', 'KL']
         return data[m]
 Op=OctonionAlgebra(SR,c=1)
 OctonionAlgebra._repr_term=_repr_termTD
