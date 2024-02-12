@@ -1,0 +1,59 @@
+"""
+from sage.manifolds.differentiable.diff_form_module import DiffFormParal
+from sage.manifolds.utilities import xder
+
+q={}
+dq={}
+
+def MakeM(mm):
+    global M,XX
+    M=Manifold(mm,'M',start_index=1)
+    qq=['q'+str(n+1) for n in range(mm)]
+    qqq=qq[0]
+    for n in range(1,mm):
+        qqq=qqq+' '+qq[n]
+    XX=M.chart(qqq)
+    for n in range(mm):
+        q[n+1]=XX[n+1]
+        dq[n+1]=XX.coframe()[n+1]
+    return XX
+
+def MakeC(tt):
+    global M,XX
+    M=Manifold(len(tt),'M',start_index=1)
+    XX=M.chart(names=tt)
+    for n in range(M._dim):
+        globals()[tt[n]]=XX[n+1]
+        globals()['d'+tt[n]]=XX.coframe()[n+1]
+    return XX
+
+def Makeg(ss,tt):
+    global g
+    g=M.metric('g',M._dim-2*ss)
+    for m in range(M._dim):
+        for n in range(M._dim):
+            g[m+1,n+1]=0
+        g[m+1,m+1]=tt[m]
+    return g
+
+def d(tt):
+    return xder(tt)
+def star(tt):
+    return tt.hodge_dual(g)
+def Show(tt):
+    return tt.display()
+def Wedge(*args):
+    if len(args)==2:
+        return wedge(args[0],args[1])
+    else:
+        return wedge(Wedge(*args[:-1]),args[-1])
+
+def MakeField(tt):
+    return M.scalar_field(tt)
+def MakeFunction(tt):
+    return tt.expr()
+
+pretty_print_default(True)
+
+print("Initialization loaded")
+"""
